@@ -24,21 +24,19 @@ if (isset($_POST['register_button']) && isset($_POST['_token']) && token_check($
 
 	$email = strip_tags($_POST['reg_email']);
 	$email = str_replace(' ', '', $email);
-	$email = ucfirst(strtolower($email));
+	$email = strtolower($email);
 	$_SESSION['reg_email'] = $email;
 
 	$confirm_email = strip_tags($_POST['reg_confirm_email']);
 	$confirm_email = str_replace(' ', '', $confirm_email);
-	$confirm_email = ucfirst(strtolower($confirm_email));
+	$confirm_email = ($confirm_email);
 	$_SESSION['reg_confirm_email'] = $confirm_email;
 
 	$password = strip_tags($_POST['reg_password']);
-	$password = str_replace(' ', '', $password);
-	$password = ucfirst(strtolower($password));
+
 
 	$confirm_password = strip_tags($_POST['reg_confirm_password']);
-	$confirm_password = str_replace(' ', '', $confirm_password);
-	$confirm_password = ucfirst(strtolower($confirm_password));
+
 
 	$date = date('Y-m-d');
 
