@@ -97,9 +97,9 @@ if (isset($_POST['register_button']) && isset($_POST['_token']) && token_check($
 		$rand = rand(1, 2);
 
 		if ($rand == 1) {
-			$profile_pic = "asset/images/profile_pics/defaults/head_deap_blue.png";
+			$profile_pic = "assets/images/profile_pics/defaults/head_alizarin.png";
 		} else if ($rand == 2) {
-			$profile_pic = "asset/images/profile_pics/defaults/head_deap_blue.png";
+			$profile_pic = "assets/images/profile_pics/defaults/head_deap_blue.png";
 		}
 		try {
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

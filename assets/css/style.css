@@ -9,6 +9,7 @@
 
 body {
 	line-height: 26px;
+	background-color: #E6EAE8;
 }
 .top-bar {
 	width: 100%;
@@ -18,6 +19,8 @@ body {
 	border-bottom: 0.25em solid #1894ca;
 	margin: 0 0 10px 0;
 	display: inline-flex;
+	position: fixed;
+	z-index: 99;
 }
 
 .logo {
@@ -28,6 +31,7 @@ body {
 	top: 7px;
 	text-shadow: #73B6E2 0.5px 0.5px 0px;
 	color: #1086BA;
+	left: 12%;
 }
 a:hover {
 	text-decoration: none;
@@ -37,14 +41,88 @@ nav {
 	right: 1px;
 	position: absolute;
 	margin: 10px;
+	right: 12%;
 }
 nav a{
 	position: relative;
 	color: #fff;
 	text-decoration: none;
 	font-size: 1.5em;
+	padding: 0 6px;
 }
+
 nav a:hover {
 	border-bottom: 7px solid #e67e22;
 	color: #fff;
 }
+.wrapper {
+	margin: 0 auto;
+	top: 60px;
+	position: relative;
+	padding: 0 10px;
+	width: 75%;
+	min-width: 950px;
+}
+.column {
+	background-color: #fff;
+	padding: 10px;
+	border-color: 1px solid #D3D3D3;
+	border-radius: 5px;
+	box-shadow: 2px 2px 1px #D3D3D3;
+	z-index: -1;
+}
+.user_details {
+	width: 250px;
+	float: left;
+	margin-bottom: 20px;
+}
+.user_details_left_right {
+	width: 125px;
+	display: inline-block;
+	position: absolute;
+}
+.user_details img {
+	height: 125px;
+	border-radius: 5px;
+	margin-right: 5px;
+}
+.main_column {
+	float: right;
+	width: 70%;
+	z-index: -1;
+	min-height: 160px;
+}
+.post_form {
+	width: 100%;
+}
+.post_form textarea {
+	width: 81%;
+	height: 60px;
+	border-radius: 3px;
+	margin-right: 5px;
+	border: 1px solid #D3D3D3;
+	font-size: 12px;
+	padding: 5px;
+}
+textarea:focus {
+	outline: 0;
+}
+.post_form input[type="submit"] {
+	width: 11%;
+	height: 60px;
+	border: none;
+	border-radius: 3px;
+	background-color: #3498db;
+	font-family: 'Bellota-BoldItalic', sans-serif;
+	color: #1E75CA;
+	text-shadow: #73B6E2 0.5px 0.5px 0px;
+	font-size: 90%;
+	position: absolute;
+	outline: 0;
+	margin: 0;	
+}
+.post_form input[type="submit"]:active {
+	padding: 5px 4px 4px 5px;
+}
+
+/* TODO section 6 lecture no 41 */
