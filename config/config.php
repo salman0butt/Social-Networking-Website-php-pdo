@@ -38,6 +38,6 @@ $timezone = date_default_timezone_set("Europe/London");
 	function csrf_field() {
 		echo '<input type="hidden" name="_token" value="'.csrf_token().'">';
 	}
-
+	define('PAGINATION', 10);
 
  ?>

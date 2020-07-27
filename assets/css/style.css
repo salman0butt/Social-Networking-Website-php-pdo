@@ -26,12 +26,15 @@ body {
 .logo {
 	font-family: 'Bellota-BoldItalic', sans-serif;
 	margin-left: 10px;
-	font-size: 2rem;
+	font-size: 2.6rem;
 	position: relative;
 	top: 7px;
 	text-shadow: #73B6E2 0.5px 0.5px 0px;
-	color: #1086BA;
+	color: #ffffff;
 	left: 12%;
+}
+.logo a {
+		color: #ffffff;
 }
 a:hover {
 	text-decoration: none;
@@ -114,7 +117,7 @@ textarea:focus {
 	border-radius: 3px;
 	background-color: #3498db;
 	font-family: 'Bellota-BoldItalic', sans-serif;
-	color: #1E75CA;
+	color: #ffffff;
 	text-shadow: #73B6E2 0.5px 0.5px 0px;
 	font-size: 90%;
 	position: absolute;
@@ -124,5 +127,15 @@ textarea:focus {
 .post_form input[type="submit"]:active {
 	padding: 5px 4px 4px 5px;
 }
+.status_post {
+	width: 96%;
+	font-size: 15px;
+	padding: 0 5px;
+	min-height: 75px;
+}
+.post_profile_pic {
+	float: left;
+	margin-right: 8px;
+}
 
-/* TODO section 6 lecture no 41 */
+/* TODO section 7 lecture no 50 */
