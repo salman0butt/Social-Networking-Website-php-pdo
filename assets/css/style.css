@@ -11,6 +11,10 @@ body {
 	line-height: 26px;
 	background-color: #E6EAE8;
 }
+a {
+	color: #20AAE5;
+	text-decoration: none;
+}
 .top-bar {
 	width: 100%;
 	min-width: 1050px;
@@ -138,4 +142,69 @@ textarea:focus {
 	margin-right: 8px;
 }
 
-/* TODO section 7 lecture no 50 */
+#comment_iframe {
+	max-height: 250px;
+	width: 100%;
+	margin-top: 5px;
+}
+.comment_section {
+	padding: 0 5px 5px 5px;
+}
+.comment_section img {
+	margin: 0 3px 5px 5px;
+}
+#comment_form textarea {
+	border-color: #D3D3D3;
+	width: 85%;
+	height: 35px;
+	border-radius: 5px;
+	color: #616060;
+	font-size: 14px;
+	margin: 3px 3px 3px 5px; 
+}
+#comment_form input[type="submit"] {
+	border: none;
+	background-color: #20AAE5;
+	color: #ffffff;
+	border-radius: 5px;
+	width: 13%;
+	height: 40px;
+	margin-top: 3px;
+	position: absolute;
+	font-family: 'Bellota-BoldItalic', sans-serif;
+	color: #ffffff;
+	text-shadow: #73B6E2 0.5px 0.5px 0px;
+}
+.newsFeedPostOptions {
+	padding: 0px;
+	text-decoration: none;
+	color: #20AAE5;
+	border: none;
+	cursor: pointer;
+}
+#like-btn {
+ cursor: pointer;
+}
+.newsFeedPostOptions iframe {
+	border: 0px;
+	height: 27px;
+	width: 120px;
+}
+
+.comment_like {
+	background-color: transparent;
+	border: none;
+	font-size: 14px;
+	color: #3498db;
+	padding: 0;
+	height: auto;
+	width: auto;
+	margin: 0;
+}
+
+.like_value {
+	display: inline;
+	font-size: 14px;
+}
+
+/* TODO section 8 lecture no 61 */
