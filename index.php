@@ -1,7 +1,6 @@
 <?php
 require_once 'includes/header.php';
-require_once 'includes/classes/User.php';
-require_once 'includes/classes/Post.php';
+
 
 if (isset($_POST['post']) && isset($_POST['_token']) && token_check($_POST['_token'])) {
 	$post = new Post($pdo, $userLoggedIn);
