@@ -29,6 +29,15 @@ class User {
 		return $this->user->username;
 	}
 
+	public function getNumberOfFriendRequests() {
+		$username = $this->user->username;
+		$query = $this->pdo->prepare("SELECT * FROM friend_requests WHERE user_to=:username");
+		$query->bindParam(':username', $username);
+		$query->execute();
+		return $query->rowCount();
+	}
+
+
 	public function getFirstAndLastName() {
 		$username = $this->user->username;
 		$query = $this->pdo->prepare("SELECT `first_name`, `last_name` FROM `users` WHERE `username` = :username");
@@ -122,6 +131,7 @@ class User {
 
 	public function removeFriend($user_to_remove) {
 		try {
+
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->pdo->beginTransaction();
 
@@ -132,13 +142,14 @@ class User {
 			$query->execute();
 			$row = $query->fetch(PDO::FETCH_OBJ);
 			$friend_array_username = $row->friend_array;
+			// dd($friend_array_username);
 
-
-			$new_friend_array = str_replace($this->user->username . ",", "", $friend_array_username);
+			$new_friend_array = str_replace($user_to_remove . ",", "", $this->user->friend_array);
 			$remove_friend_query = $this->pdo->prepare("UPDATE users SET friend_array=:new_friend_array WHERE username=:logged_in_user");
 			$remove_friend_query->bindValue(':new_friend_array', $new_friend_array);
 			$remove_friend_query->bindValue(':logged_in_user', $logged_in_user);
 			$remove_friend = $remove_friend_query->execute();
+
 
 			//$insert_query->debugDumpParams();
 
@@ -149,8 +160,9 @@ class User {
 			$remove_friend = $remove_friend_query->execute();
 
 			$this->pdo->commit();
+
 		} catch (Exception $e) {
-			echo $e->getMessage();
+			dd($e->getMessage());
 			$this->pdo->rollback();
 		}
 
@@ -186,6 +198,7 @@ class User {
 				}
 			}
 		}
+
 		return $mutualFriends;
 
 	}

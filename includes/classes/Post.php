@@ -48,6 +48,10 @@ class Post {
 				$returned_id = $this->pdo->lastInsertId();
 
 				//Insert Notification
+				if ($user_to != 'none') {
+					$notification = new Notification($this->pdo, $added_by);
+					$notification->insertNotification($returned_id, $user_to, "profile_post");
+				}
 
 				//Update Post count for user
 
@@ -457,6 +461,216 @@ $(document).ready(function() {
 				$str .= "<input type='hidden' class='noMorePosts' value='true'><p style='text-align:center;'> no more posts to show! </p>";
 			}
 		}
+		echo $str;
+	}
+
+	public function getSinglePost($post_id) {
+
+		$userLoggedIn = $this->user_obj->getUsername();
+
+		$opened_query = $this->pdo->prepare("UPDATE notifications SET opened=:opened WHERE user_to=:userLoggedIn AND link LIKE :link");
+		$opened_query->bindValue(':opened', 'yes');
+		$opened_query->bindValue(':userLoggedIn', $userLoggedIn);
+		$opened_query->bindValue(':link', '%=$post_id');
+		$opened_query->execute();
+
+		$str = ""; //String to return 
+		$data_query = $this->pdo->prepare("SELECT * FROM posts WHERE deleted=:deleted AND id=:post_id");
+		$data_query->bindValue(':deleted', 'no');
+		$data_query->bindValue(':post_id', $post_id);
+		$data_query->execute();
+
+		if($data_query->rowCount() > 0) {
+
+
+			$row = $data_query->fetch(PDO::FETCH_ASSOC); 
+				$id = $row['id'];
+				$body = $row['body'];
+				$added_by = $row['added_by'];
+				$date_time = $row['date_added'];
+
+				//Prepare user_to string so it can be included even if not posted to a user
+				if($row['user_to'] == "none") {
+					$user_to = "";
+				}
+				else {
+					$user_to_obj = new User($this->pdo, $row['user_to']);
+					$user_to_name = $user_to_obj->getFirstAndLastName();
+					$user_to = "to <a href='" . $row['user_to'] ."'>" . $user_to_name . "</a>";
+				}
+
+				//Check if user who posted, has their account closed
+				$added_by_obj = new User($this->pdo, $added_by);
+				if($added_by_obj->isClosed()) {
+					return;
+				}
+
+				$user_logged_obj = new User($this->pdo, $userLoggedIn);
+				if($user_logged_obj->isFriend($added_by)){
+
+
+					if($userLoggedIn == $added_by)
+						$delete_button = "<button class='delete_button btn-danger' id='post$id'>X</button>";
+					else 
+						$delete_button = "";
+
+
+					$user_details_query = $this->pdo->prepare("SELECT first_name, last_name, profile_pic FROM users WHERE username=:added_by");
+					$user_details_query->bindValue(':added_by', $added_by);
+					$user_details_query->execute();
+
+
+					$user_row = $user_details_query->fetch(PDO::FETCH_ASSOC);
+					$first_name = $user_row['first_name'];
+					$last_name = $user_row['last_name'];
+					$profile_pic = $user_row['profile_pic'];
+
+
+					?>
+					<script> 
+						function toggle<?php echo $id; ?>() {
+
+							var target = $(event.target);
+							if (!target.is("a")) {
+								var element = document.getElementById("toggleComment<?php echo $id; ?>");
+
+								if(element.style.display == "block") 
+									element.style.display = "none";
+								else 
+									element.style.display = "block";
+							}
+						}
+
+					</script>
+					<?php
+
+					$comments_check = $this->pdo->prepare("SELECT * FROM comments WHERE post_id=:post_id");
+					$comments_check->bindValue(':post_id', $post_id);
+					$comments_check->execute();
+					$comment_count = $comments_check->rowCount();
+
+
+					//Timeframe
+					$date_time_now = date("Y-m-d H:i:s");
+					$start_date = new DateTime($date_time); //Time of post
+					$end_date = new DateTime($date_time_now); //Current time
+					$interval = $start_date->diff($end_date); //Difference between dates 
+					if($interval->y >= 1) {
+						if($interval == 1)
+							$time_message = $interval->y . " year ago"; //1 year ago
+						else 
+							$time_message = $interval->y . " years ago"; //1+ year ago
+					}
+					else if ($interval->m >= 1) {
+						if($interval->d == 0) {
+							$days = " ago";
+						}
+						else if($interval->d == 1) {
+							$days = $interval->d . " day ago";
+						}
+						else {
+							$days = $interval->d . " days ago";
+						}
+
+
+						if($interval->m == 1) {
+							$time_message = $interval->m . " month ". $days;
+						}
+						else {
+							$time_message = $interval->m . " months ". $days;
+						}
+
+					}
+					else if($interval->d >= 1) {
+						if($interval->d == 1) {
+							$time_message = "Yesterday";
+						}
+						else {
+							$time_message = $interval->d . " days ago";
+						}
+					}
+					else if($interval->h >= 1) {
+						if($interval->h == 1) {
+							$time_message = $interval->h . " hour ago";
+						}
+						else {
+							$time_message = $interval->h . " hours ago";
+						}
+					}
+					else if($interval->i >= 1) {
+						if($interval->i == 1) {
+							$time_message = $interval->i . " minute ago";
+						}
+						else {
+							$time_message = $interval->i . " minutes ago";
+						}
+					}
+					else {
+						if($interval->s < 30) {
+							$time_message = "Just now";
+						}
+						else {
+							$time_message = $interval->s . " seconds ago";
+						}
+					}
+
+					$str .= "<div class='status_post'>
+				<div class='post_profile_pic'>
+					<img src='$profile_pic' class='rounded-circle' alt='profile pic' width='50'>
+				</div>
+				<div class='posted_by' style='#ACACAC'>
+				<a href='$added_by'>$first_name $last_name</a> $user_to &emsp; $time_message 
+				$delete_button
+				</div>
+					<div id='post_body'>
+						$body
+						<br/>
+						<br/>
+						<br/>
+					</div>
+					<div class='newsFeedPostOptions' onClick='javascript:toggle$id()'>
+						Comments ($comment_count) &emsp;
+						<iframe src='like.php?post_id=$id' scrolling='no' id='like-btn'></iframe>
+					</div>
+				</div>
+				<div class='post_comment' id='toggleComment$id' style='display:none;'>
+					 <iframe src='comment_frame.php?post_id=$id' id='comment_iframe' frameborder='0'></iframe>
+				</div>
+				<hr>";
+
+
+				?>
+				<script>
+
+					$(document).ready(function() {
+
+						$('#post<?php echo $id; ?>').on('click', function() {
+							bootbox.confirm("Are you sure you want to delete this post?", function(result) {
+
+								$.post("includes/form_handlers/delete_post.php?post_id=<?php echo $id; ?>", {result:result});
+
+								if(result)
+									location.reload();
+
+							});
+						});
+
+
+					});
+
+				</script>
+				<?php
+				}
+				else {
+					echo "<p>You cannot see this post because you are not friends with this user.</p>";
+					return;
+				}
+		}
+		else {
+			echo "<p>No post found. If you clicked a link, it may be broken.</p>";
+					return;
+		}
+
 		echo $str;
 	}
 

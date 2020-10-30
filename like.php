@@ -26,6 +26,7 @@
 require 'config/config.php';
 include "includes/classes/User.php";
 include "includes/classes/Post.php";
+include "includes/classes/Notification.php";
 
 if (isset($_SESSION['username'])) {
 	$userLoggedIn = $_SESSION['username'];
@@ -100,6 +101,10 @@ if (isset($_POST['like_button'])) {
 	}
 
 	//Insert notification
+		if ($user_liked != $userLoggedIn) {
+			$notification = new Notification($pdo, $userLoggedIn);
+			$notification->insertNotification($post_id, $user_liked, "like");
+		}
 }
 
 //Unlike Button

@@ -20,6 +20,7 @@
 require 'config/config.php';
 include "includes/classes/User.php";
 include "includes/classes/Post.php";
+include "includes/classes/Notification.php";
 
 if (isset($_SESSION['username'])) {
 	$userLoggedIn = $_SESSION['username'];
@@ -56,6 +57,7 @@ $user_query->execute();
 $row = $user_query->fetch(PDO::FETCH_OBJ);
 
 $posted_to = $row->added_by;
+$user_to = $row->user_to;
 $posted_by = '';
 if (isset($_POST['postComment' . $post_id])) {
 	$post_body = $_POST['post_body'];
@@ -70,6 +72,30 @@ if (isset($_POST['postComment' . $post_id])) {
 	$insert_post->bindValue(':post_id', $post_id);
 	if ($insert_post->execute()) {
 		echo "<p>Comment Posted! </p>";
+		if ($posted_to != $userLoggedIn) {
+			$notification = new Notification($pdo, $userLoggedIn);
+			$notification->insertNotification($post_id, $posted_to, "comment");
+		}
+		if ($user_to != 'none' && $user_to != $userLoggedIn) {
+			$notification = new Notification($pdo, $userLoggedIn);
+			$notification->insertNotification($post_id, $user_to, "profile_comment");
+		}
+
+		$get_commenters = $pdo->prepare("SELECT * FROM comments WHERE post_id=:post_id");
+		$get_commenters->bindValue(':post_id', $post_id);
+		$get_commenters->execute();
+		$notified_users = array();
+
+		foreach($get_commenters->fetchAll(PDO::FETCH_OBJ) as $row) {
+			if($row->posted_by != $posted_to && $row->posted_by != $user_to && $row->posted_by != $userLoggedIn && !in_array($row->posted_by, $notified_users)) {
+
+				$notification = new Notification($pdo, $userLoggedIn);
+				$notification->insertNotification($post_id, $row->posted_by, "comment_non_owner");
+
+				array_push($notified_users, $row->posted_by);
+			}
+
+		}
 	} else {
 		echo "<p>Something went wrong!</p>";
 	}
