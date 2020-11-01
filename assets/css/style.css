@@ -574,8 +574,19 @@ textarea:focus {
     color: #fff;
 }
 
+.message .deleteButton {
+   color: #fff;
+   margin: 0 5px 5px 0;
+   cursor: pointer;
+}
 
+.postedImage img {
+	max-height: 300px;
+    max-width: 100%;
+    display: block;
+    margin: 5px auto;
+}
 
-
-
-/* TODO section 13 lecture no 142 */
+#fileToUpload {
+	padding: 1% 0;
+}
